@@ -2,8 +2,10 @@
 
 namespace BookStoreApp.API.Models.Book
 {
-    public class BookCreateDto : BaseDto
+    public class BookUpdateDto
     {
+        [Required]
+        public int Id { get; set; }
         [Required]
         [StringLength(50)]
         public string Title { get; set; }
