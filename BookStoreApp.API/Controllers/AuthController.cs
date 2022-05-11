@@ -63,7 +63,7 @@ namespace BookStoreApp.API.Controllers
         }
 
         [HttpPost]
-        [Route("Login")]
+        [Route("login")]
 
         public async Task<ActionResult<AuthResponse>> Login(LoginUserDto userDto)
         {
@@ -76,6 +76,15 @@ namespace BookStoreApp.API.Controllers
 
                 if (user == null || passwordValid == false)
                 {
+                    if (user == null)
+                    {
+                        logger.LogInformation("FindByEmailAsync failed user is null");
+                    }
+                    else
+                    {
+                        logger.LogInformation("FindByEmailAsync failed password is invalid");
+                    }
+
                     return Unauthorized(userDto);
                 }
 
