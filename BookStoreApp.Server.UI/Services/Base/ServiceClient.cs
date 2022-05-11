@@ -1267,10 +1267,10 @@ namespace BookStoreApp.Server.UI.Services.Base
         public string FirstName { get; set; }
 
         [Newtonsoft.Json.JsonProperty("lastName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public byte[] LastName { get; set; }
+        public string LastName { get; set; }
 
         [Newtonsoft.Json.JsonProperty("bio", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public byte[] Bio { get; set; }
+        public string Bio { get; set; }
 
         [Newtonsoft.Json.JsonProperty("books", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<Book> Books { get; set; }
