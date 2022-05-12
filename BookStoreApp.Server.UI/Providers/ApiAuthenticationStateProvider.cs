@@ -8,11 +8,11 @@ namespace BookStoreApp.Server.UI.Providers
     public class ApiAuthenticationStateProvider : AuthenticationStateProvider
     {
         private readonly ILocalStorageService localStorage;
-        private readonly JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-
+        private readonly JwtSecurityTokenHandler jwtSecurityTokenHandler;
         public ApiAuthenticationStateProvider(ILocalStorageService localStorage)
         {
             this.localStorage = localStorage;
+            jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -24,9 +24,9 @@ namespace BookStoreApp.Server.UI.Providers
                 return new AuthenticationState(user);
             }
 
-            var tokenContext = jwtSecurityTokenHandler.ReadJwtToken(savedToken);
+            var tokenContent = jwtSecurityTokenHandler.ReadJwtToken(savedToken);
 
-            if (tokenContext.ValidTo < DateTime.Now)
+            if (tokenContent.ValidTo < DateTime.Now)
             {
                 return new AuthenticationState(user);
             }
@@ -35,7 +35,7 @@ namespace BookStoreApp.Server.UI.Providers
 
             user = new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt"));
 
-            return new AuthenticationState(user);   
+            return new AuthenticationState(user);
         }
 
         public async Task LoggedIn()
@@ -57,9 +57,9 @@ namespace BookStoreApp.Server.UI.Providers
         private async Task<List<Claim>> GetClaims()
         {
             var savedToken = await localStorage.GetItemAsync<string>("accessToken");
-            var tokenContet = jwtSecurityTokenHandler.ReadJwtToken(savedToken);
-            var claims = tokenContet.Claims.ToList();
-            claims.Add(new Claim(ClaimTypes.Name, tokenContet.Subject));
+            var tokenContent = jwtSecurityTokenHandler.ReadJwtToken(savedToken);
+            var claims = tokenContent.Claims.ToList();
+            claims.Add(new Claim(ClaimTypes.Name, tokenContent.Subject));
             return claims;
         }
     }

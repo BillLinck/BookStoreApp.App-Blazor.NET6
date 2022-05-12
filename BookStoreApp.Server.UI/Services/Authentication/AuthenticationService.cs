@@ -22,10 +22,10 @@ namespace BookStoreApp.Server.UI.Services.Authentication
         {
             var response = await httpClient.LoginAsync(loginModel);
 
-            // Store Token
-            await localStorage.SetItemAsStringAsync("accessToken", response.Token);
+            //Store Token
+            await localStorage.SetItemAsync("accessToken", response.Token);
 
-            // Change Auth State of app
+            //Change auth state of app
             await ((ApiAuthenticationStateProvider)authenticationStateProvider).LoggedIn();
 
             return true;

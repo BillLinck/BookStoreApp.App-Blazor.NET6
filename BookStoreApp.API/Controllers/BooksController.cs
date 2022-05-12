@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,8 +33,8 @@ namespace BookStoreApp.API.Controllers
         {
             var bookDtos = await _context.Books
                 .Include(q => q.Author)
-                .ProjectTo< BookReadOnlyDto>(mapper.ConfigurationProvider)
-                .ToListAsync();    
+                .ProjectTo<BookReadOnlyDto>(mapper.ConfigurationProvider)
+                .ToListAsync();
             return Ok(bookDtos);
         }
 
@@ -46,7 +45,7 @@ namespace BookStoreApp.API.Controllers
             var book = await _context.Books
                 .Include(q => q.Author)
                 .ProjectTo<BookDetailsDto>(mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(q => q.Id == id);
 
             if (book == null)
             {
@@ -62,6 +61,7 @@ namespace BookStoreApp.API.Controllers
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> PutBook(int id, BookUpdateDto bookDto)
         {
+
             if (id != bookDto.Id)
             {
                 return BadRequest();
@@ -83,7 +83,7 @@ namespace BookStoreApp.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (! await BookExistsAsync(id))
+                if (!await BookExistsAsync(id))
                 {
                     return NotFound();
                 }
@@ -100,14 +100,13 @@ namespace BookStoreApp.API.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize(Roles = "Administrator")]
-        public async Task<ActionResult<Book>> PostBook(BookCreateDto bookDto)
+        public async Task<ActionResult<BookCreateDto>> PostBook(BookCreateDto bookDto)
         {
             var book = mapper.Map<Book>(bookDto);
-
             _context.Books.Add(book);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBook", new { id = book.Id }, book);
+            return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
         }
 
         // DELETE: api/Books/5
